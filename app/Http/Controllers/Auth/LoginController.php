@@ -22,22 +22,13 @@ class LoginController extends Controller
 
     use AuthenticatesUsers;
 
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest')->except('logout');
     }
+
     public function login(Request $request)
     {
         $input = $request->all();
@@ -47,7 +38,7 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password']))) {
+        if (auth()->attempt(array('email' => $input['email'], 'password' => $input['password']), true)) {
             if (auth()->user()->type == 'admin') {
                 return redirect()->route('admin.home');
             } else if (auth()->user()->type == 'manager') {
@@ -59,5 +50,6 @@ class LoginController extends Controller
             return redirect()->route('login')
                 ->with('error', 'Email-Address And Password Are Wrong.');
         }
+
     }
 }
